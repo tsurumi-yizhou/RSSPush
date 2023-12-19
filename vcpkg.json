@@ -1,0 +1,8 @@
+{
+  "name": "rss-push",
+  "version-string": "1.0.0",
+  "builtin-baseline": "48e95d1aa3fedd24234f1d436226d07fc2b4f45f",
+  "dependencies": [
+    "boost-asio", "boost-beast", "boost-lockfree", "boost-property-tree", "jwt-cpp"
+  ]
+}

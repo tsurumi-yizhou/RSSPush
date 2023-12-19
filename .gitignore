@@ -1,0 +1,5 @@
+build/
+.idea/
+out/
+
+*/.DS_Store
