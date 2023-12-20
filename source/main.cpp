@@ -27,12 +27,12 @@ Task<void> push(rss_push::config_t config) {
     //pushers.insert({"apn", std::dynamic_pointer_cast<rss_push::pusher_base>(std::make_shared<rss_push::apn_pusher_t>(config))});
 
     for(auto[label, pusher]: pushers) {
-        pusher->refresh();
+        co_await pusher->refresh();
     }
 
     for(const auto& notification: notifications) {
         for(const auto& device: devices) {
-            pushers[device.platform]->notify(notification, device.token);
+            co_await pushers[device.platform]->notify(notification, device.token);
             fmt::print("push {} to {}\n", notification.title, device.username);
         }
     }

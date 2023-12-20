@@ -33,9 +33,7 @@ public:
         };
         auto response = co_await fv::Post("https://oauth-login.cloud.huawei.com/oauth2/v3/token", fv::body_kvs(body),
                                           fv::content_type("application/x-www-form-urlencoded"));
-        nlohmann::json json = response.Content;
-        receipt_t receipt = json;
-        access_token = receipt.access_token;
+        fmt::print("{}\n", response.Content);
     }
 
     Task<void> notify (const rss_push::notification_t &notification, const std::string& token) override {
@@ -47,6 +45,7 @@ public:
         payload["message"]["token"] = token;
         auto response = co_await fv::Post(url, fv::body_json(payload), fv::content_type("application/json"),
                                               fv::authorization(fmt::format("Bearer {}", access_token)));
+        fmt::print("{}\n", response.Content);
     };
 };
 

@@ -21,7 +21,7 @@ public:
 
     Task<void> refresh() override {
         const auto now = std::chrono::system_clock::now();
-        const auto expire = now - std::chrono::hours (1);
+        const auto expire = now + std::chrono::hours (1);
         auto iat = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch()).count();
         auto exp = std::chrono::duration_cast<std::chrono::seconds>(expire.time_since_epoch()).count();
         auto jwt = jwt::create()
@@ -33,16 +33,13 @@ public:
                 .set_payload_claim("aud", jwt::claim(aud))
                 .set_payload_claim("iat", jwt::claim(std::to_string(iat)))
                 .set_payload_claim("exp", jwt::claim(std::to_string(exp)))
-                .sign(jwt::algorithm::hs256{config.private_key});
+                .sign(jwt::algorithm::rs256("", config.private_key, "", ""));
         std::map<std::string, std::string> body {
                 {"grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer"},
                 {"assertion", jwt}
         };
         auto response = co_await fv::Post("https://oauth2.googleapis.com/token", fv::body_kvs(body), fv::content_type("application/x-www-form-urlencoded"));
-        nlohmann::json json = response.Content;
-        receipt_t receipt = json;
-        access_token = receipt.access_token;
-        fmt::print("Refresh access token success\n");
+        fmt::print("{}\n", response.Content);
     }
 
     Task<void> notify(const rss_push::notification_t &notification, const std::string& token) override {
@@ -53,6 +50,7 @@ public:
         payload["message"]["token"] = token;
         auto response = co_await fv::Post(url, fv::body_json(payload), fv::content_type("application/json"),
                                               fv::authorization(fmt::format("Bearer {}", access_token)));
+        fmt::print("{}\n", response.Content);
     }
 };
 
