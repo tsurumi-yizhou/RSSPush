@@ -24,7 +24,7 @@ Task<void> push(rss_push::config_t config) {
     std::map<std::string, std::shared_ptr<rss_push::pusher_base>> pushers;
     pushers.insert({"fcm", std::dynamic_pointer_cast<rss_push::pusher_base>(std::make_shared<rss_push::fcm_pusher_t>(config))});
     pushers.insert({"agc", std::dynamic_pointer_cast<rss_push::pusher_base>(std::make_shared<rss_push::agc_pusher_t>(config))});
-    pushers.insert({"apn", std::dynamic_pointer_cast<rss_push::pusher_base>(std::make_shared<rss_push::apn_pusher_t>(config))});
+    //pushers.insert({"apn", std::dynamic_pointer_cast<rss_push::pusher_base>(std::make_shared<rss_push::apn_pusher_t>(config))});
 
     for(auto[label, pusher]: pushers) {
         pusher->refresh();

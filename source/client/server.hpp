@@ -28,6 +28,9 @@ Task<void> serve(const database_t& config) {
     fv::HttpServer server{};
     server.SetHttpHandler("/register", [&] (fv::Request& request) -> Task<fv::Response> {
         try {
+            if (request.Method != fv::MethodType::Post) {
+                co_return fv::Response::FromNotFound();
+            }
             nlohmann::json payload = request.Content;
             record_t record = payload;
             conn.insert(record);

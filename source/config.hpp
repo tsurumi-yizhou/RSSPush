@@ -21,9 +21,9 @@ struct database_t {
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(database_t, host, file)
 
 struct fcm_config_t {
-    std::string email, key_id, project_id;
+    std::string project_id, private_key_id, private_key, client_email, client_id, scope;
 };
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(fcm_config_t, email, key_id, project_id)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(fcm_config_t, project_id, private_key_id, private_key, client_email, client_id, scope)
 
 struct hms_config_t {
     std::string client_secret, client_id, project_id;
@@ -37,14 +37,13 @@ struct apn_config_t {
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(apn_config_t, issuer_key, key_id, private_key)
 
 struct config_t {
-    std::string host;
     std::vector<feed_t> feeds;
     database_t database;
     fcm_config_t fcm;
     hms_config_t hms;
     apn_config_t apn;
 };
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(config_t, host, feeds, fcm, hms, apn)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(config_t, feeds, database, fcm, hms, apn)
 
 }
 
