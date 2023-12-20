@@ -2,64 +2,50 @@
 // Created by yihtseu on 2023/12/19.
 //
 
-#include <string>
-#include <boost/property_tree/ptree.hpp>
+#ifndef RSSPUSH_CONFIG_HPP
+#define RSSPUSH_CONFIG_HPP
+
+#include <nlohmann/json.hpp>
+
+namespace rss_push {
+
+struct feed_t {
+    std::string link;
+    std::uint64_t updated;
+};
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(feed_t, link, updated)
+
+struct database_t {
+    std::string host, file;
+};
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(database_t, host, file)
+
+struct fcm_config_t {
+    std::string email, key_id, project_id;
+};
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(fcm_config_t, email, key_id, project_id)
+
+struct hms_config_t {
+    std::string client_secret, client_id, project_id;
+
+};
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(hms_config_t, client_id, client_secret, project_id)
+
+struct apn_config_t {
+    std::string issuer_key, key_id, private_key;
+};
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(apn_config_t, issuer_key, key_id, private_key)
 
 struct config_t {
-
     std::string host;
-
-    struct {
-        std::string filename;
-    } database;
-
-    struct {
-        std::string email, key_id;
-    } fcm_config;
-
-    struct {
-        std::string client_secret, client_id, project_id;
-    } hms_config;
-
-    struct {
-        std::string issuer_key, key_id;
-    } apn_config;
+    std::vector<feed_t> feeds;
+    database_t database;
+    fcm_config_t fcm;
+    hms_config_t hms;
+    apn_config_t apn;
 };
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(config_t, host, feeds, fcm, hms, apn)
 
-config_t deserialize(const boost::property_tree::ptree& root) {
-    config_t config;
-    config.host = root.get<std::string>("host");
-
-    config.database.filename = root.get<std::string>("database.filename");
-
-    config.fcm_config.email = root.get<std::string>("fcm.email");
-    config.fcm_config.key_id = root.get<std::string>("fcm.keyId");
-
-    config.hms_config.client_id = root.get<std::string>("hms.clientId");
-    config.hms_config.client_secret = root.get<std::string >("hms.clientSecret");
-    config.hms_config.project_id = root.get<std::string>("hms.projectId");
-
-    config.apn_config.issuer_key = root.get<std::string>("apn.issuerKey");
-    config.apn_config.key_id = root.get<std::string>("apn.keyId");
-
-    return config;
 }
 
-boost::property_tree::ptree enserialize(const config_t& config) {
-    boost::property_tree::ptree root;
-    root.put("host", config.host);
-
-    root.put("database.filename", config.database.filename);
-
-    root.put("fcm.email", config.fcm_config.email);
-    root.put("fcm.keyId", config.fcm_config.key_id);
-
-    root.put("hms.clientId", config.hms_config.client_id);
-    root.put("hms.clientSecret", config.hms_config.client_secret);
-    root.put("hms.projectId", config.hms_config.project_id);
-
-    root.put("apn.keyId", config.apn_config.key_id);
-    root.put("apn.issuerKey", config.apn_config.issuer_key);
-
-    return root;
-}
+#endif
